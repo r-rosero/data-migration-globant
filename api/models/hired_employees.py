@@ -9,3 +9,7 @@ class HiredEmployee(Base):
     datetime = Column(String, nullable=False, comment="Hire datetime in ISO format")
     department_id = Column(Integer, ForeignKey("departments.id"), nullable=False, comment="Id of the department which the employee was hired for")
     job_id = Column(Integer, ForeignKey("jobs.id"), nullable=False, comment="Id of the job which the employee was hired for")
+
+class HireEmployeeBatch:
+    def __init__(self, hired_employees):
+        self.hired_employees = hired_employees
