@@ -6,6 +6,6 @@ class HiredEmployee(Base):
 
     id = Column(Integer, primary_key=True, index=True, comment="Id of the employee")
     name = Column(String, nullable=False, comment="Name and surname of the employee")
-    datetime = Column(DateTime, nullable=False, comment="Hire datetime in ISO format")
+    datetime = Column(String, nullable=False, comment="Hire datetime in ISO format")
     department_id = Column(Integer, ForeignKey("departments.id"), nullable=False, comment="Id of the department which the employee was hired for")
     job_id = Column(Integer, ForeignKey("jobs.id"), nullable=False, comment="Id of the job which the employee was hired for")
