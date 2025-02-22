@@ -10,4 +10,4 @@ app.include_router(hired_employees.router)
 
 @app.get("/")
 def home():
-    return {"message": "Bienvenidos a la API de Data Migration Globant"}
+    return {"mensaje": "Bienvenidos a la API de Data Migration Globant"}
