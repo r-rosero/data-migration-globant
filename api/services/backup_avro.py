@@ -22,7 +22,6 @@ else:
     dir_restored = "data/"
 
 def get_avro_type(sqlalchemy_type):
-    """Map SQLAlchemy types to Avro types."""
     if isinstance(sqlalchemy_type, (int, float)):
         return "int"
     elif isinstance(sqlalchemy_type, bool):
@@ -63,7 +62,7 @@ def export_to_avro(table_name: str, db: Session) -> str:
         s3_key = f"backups/{table_name}.avro"
         s3_client.upload_file(file_path, S3_BUCKET_NAME, s3_key)
 
-        # Eliminar archivo local después de subirlo (opcional)
+        # Eliminar archivo temporal
         os.remove(file_path)
 
         # Retornar URL de S3
@@ -71,11 +70,9 @@ def export_to_avro(table_name: str, db: Session) -> str:
         return file_url
 
     except Exception as e:
-        print(f"Error exporting {table_name} to AVRO: {str(e)}")
-        raise Exception(f"Error exporting {table_name} to AVRO: {str(e)}")
+        raise Exception(f"Error exportando backup de {table_name} a AVRO: {str(e)}")
 
 def restore_from_avro(table_name: str, db: Session):
-    """Restores data from an AVRO backup file into the database."""
     try:
         s3_key = f"backups/{table_name}.avro"
 
@@ -86,7 +83,7 @@ def restore_from_avro(table_name: str, db: Session):
             rows = [row for row in reader]
 
         if not rows:
-            raise Exception("No data found in backup file.")
+            raise Exception("Archivo de backup vacío.")
         
         metadata = MetaData()
         metadata.reflect(bind=db.get_bind())
@@ -98,7 +95,7 @@ def restore_from_avro(table_name: str, db: Session):
 
         os.remove(f"{dir_restored}{s3_key}")
 
-        return {"message": f"Successfully restored {len(rows)} records to {table_name}."}
+        return {"message": f"{len(rows)} registros restaurados a {table_name}."}
     except Exception as e:
         db.rollback()
-        raise Exception(f"Error restoring {table_name} from AVRO: {str(e)}")
+        raise Exception(f"Error restaurando {table_name}: {str(e)}")
