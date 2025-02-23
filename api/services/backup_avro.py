@@ -2,7 +2,7 @@ import os
 import boto3
 import fastavro
 from sqlalchemy.orm import Session
-from sqlalchemy import text
+from sqlalchemy import MetaData, insert, text
 from api.config.config_env import S3_BUCKET_NAME, S3_REGION, S3_ACCESS_KEY, S3_SECRET_KEY
 
 s3_client = boto3.client(
@@ -75,24 +75,30 @@ def restore_from_avro(table_name: str, db: Session):
     try:
         s3_key = f"backups/{table_name}.avro"
         file_path = f"https://{S3_BUCKET_NAME}.s3.{S3_REGION}.amazonaws.com/{s3_key}"
+        
+        print(os.getcwd())
 
-        s3_client.download_file(S3_BUCKET_NAME, s3_key, backup_dir_tmp)
+        s3_client.download_file(S3_BUCKET_NAME, s3_key, f"data/{s3_key}")
         
         if not os.path.exists(f"{backup_dir_tmp}/{table_name}.avro"):
             raise Exception("Backup file not found.")
 
-        with open(f"{backup_dir_tmp}/{table_name}.avro", "rb") as in_file:
+        with open(f"{backup_dir_tmp}{table_name}.avro", "rb") as in_file:
             reader = fastavro.reader(in_file)
             rows = [row for row in reader]
 
         if not rows:
             raise Exception("No data found in backup file.")
+        
+        metadata = MetaData()
+        metadata.reflect(bind=db.get_bind())
+        table = metadata.tables[table_name]
 
         db.execute(text(f"DELETE FROM {table_name}"))
-        db.bulk_insert_mappings(db.get_bind().execute, rows)
+        db.execute(insert(table).values(rows))
         db.commit()
 
-        os.remove(backup_dir_tmp)
+        os.remove(f"data/{s3_key}")
 
         return {"message": f"Successfully restored {len(rows)} records to {table_name}."}
     except Exception as e:
