@@ -97,7 +97,7 @@ def restore_from_avro(table_name: str, db: Session):
         db.execute(insert(table).values(rows))
         db.commit()
 
-        os.remove(f"data/{s3_key}")
+        os.remove(f"{dir_restored}{s3_key}")
 
         return {"message": f"Successfully restored {len(rows)} records to {table_name}."}
     except Exception as e:
