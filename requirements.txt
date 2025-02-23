@@ -6,3 +6,4 @@ pydantic
 gunicorn
 fastavro
 boto3
+python-dotenv

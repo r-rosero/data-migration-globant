@@ -3,17 +3,12 @@ import boto3
 import fastavro
 from sqlalchemy.orm import Session
 from sqlalchemy import text
-
-# Configuración de S3
-S3_BUCKET_NAME = "data-migration-globant"
-S3_REGION = "us-east-2"
-A_K = "AKIAU5LH6BM3FCHPAOII"
-S_K = "1RHKMU9smJ5+UgBIjNmroityK/qH3frtY4V9xwXD"
+from config.config_env import S3_BUCKET_NAME, S3_REGION, S3_ACCESS_KEY, S3_SECRET_KEY
 
 s3_client = boto3.client(
     "s3",
-    aws_access_key_id=A_K,
-    aws_secret_access_key=S_K,
+    aws_access_key_id=S3_ACCESS_KEY,
+    aws_secret_access_key=S3_SECRET_KEY,
     region_name=S3_REGION
 )
 
@@ -26,10 +21,10 @@ def get_avro_type(sqlalchemy_type):
     elif isinstance(sqlalchemy_type, str):
         return "string"
     else:
-        return "string"  # Default fallback
+        return "string"
 
 def export_to_avro(table_name: str, db: Session) -> str:
-    backup_dir="data/backups"
+    backup_dir_tmp="data/backups"
     
     """Exports a table to an AVRO file."""
     try:
@@ -50,12 +45,10 @@ def export_to_avro(table_name: str, db: Session) -> str:
         }
 
         for col, value in rows[0].items():
-            print(get_avro_type)
             schema["fields"].append({"name": col, "type": ["null", get_avro_type(value)]})
 
-
         # Guardar temporalmente en local
-        file_path = os.path.join(backup_dir, f"{table_name}.avro")
+        file_path = os.path.join(backup_dir_tmp, f"{table_name}.avro")
         with open(file_path, "wb") as out_file:
             fastavro.writer(out_file, schema, rows)
 
