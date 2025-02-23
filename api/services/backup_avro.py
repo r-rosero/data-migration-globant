@@ -14,7 +14,9 @@ s3_client = boto3.client(
 
 if os.getenv("RENDER"):
     backup_dir_tmp = "/tmp/"  # Render usa /tmp/ para almacenamiento temporal
-    dir_restored = "tmp/"
+    dir_restored_tmp = "/tmp/backups/"
+    os.makedirs(dir_restored_tmp, exist_ok=True)
+    dir_restored = "/tmp/"
 else:
     backup_dir_tmp = "data/backups/"
     dir_restored = "data/"
