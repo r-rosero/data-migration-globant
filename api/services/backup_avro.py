@@ -17,7 +17,7 @@ if os.getenv("RENDER"):
     dir_restored = "/tmp/"
 else:
     backup_dir_tmp = "data/backups/"
-    dir_restored = "data/"
+    dir_restored = "data/backups/"
 
 def get_avro_type(sqlalchemy_type):
     """Map SQLAlchemy types to Avro types."""
@@ -75,10 +75,7 @@ def export_to_avro(table_name: str, db: Session) -> str:
 def restore_from_avro(table_name: str, db: Session):
     """Restores data from an AVRO backup file into the database."""
     try:
-        s3_key = f"backups/{table_name}.avro"
-        file_path = f"https://{S3_BUCKET_NAME}.s3.{S3_REGION}.amazonaws.com/{s3_key}"
-        
-        print(os.getcwd())
+        s3_key = f"{table_name}.avro"
 
         s3_client.download_file(S3_BUCKET_NAME, s3_key, f"{dir_restored}{s3_key}")
         
