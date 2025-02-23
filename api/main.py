@@ -1,5 +1,5 @@
 from fastapi import FastAPI
-from api.routes import jobs, departments, hired_employees
+from api.routes import jobs, departments, hired_employees, backup
 
 app = FastAPI(title="Data Migration Globant API", version="0.1.0")
 
@@ -7,6 +7,7 @@ app = FastAPI(title="Data Migration Globant API", version="0.1.0")
 app.include_router(jobs.router)
 app.include_router(departments.router)
 app.include_router(hired_employees.router)
+app.include_router(backup.router)
 
 @app.get("/")
 def home():
