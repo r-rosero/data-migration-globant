@@ -14,8 +14,10 @@ s3_client = boto3.client(
 
 if os.getenv("RENDER"):
     backup_dir_tmp = "/tmp/"  # Render usa /tmp/ para almacenamiento temporal
+    dir_restored = "/tmp/"
 else:
     backup_dir_tmp = "data/backups/"
+    dir_restored = "data/"
 
 def get_avro_type(sqlalchemy_type):
     """Map SQLAlchemy types to Avro types."""
@@ -78,7 +80,7 @@ def restore_from_avro(table_name: str, db: Session):
         
         print(os.getcwd())
 
-        s3_client.download_file(S3_BUCKET_NAME, s3_key, f"data/{s3_key}")
+        s3_client.download_file(S3_BUCKET_NAME, s3_key, f"{dir_restored}{s3_key}")
         
         if not os.path.exists(f"{backup_dir_tmp}/{table_name}.avro"):
             raise Exception("Backup file not found.")
