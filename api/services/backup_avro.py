@@ -13,7 +13,7 @@ s3_client = boto3.client(
 )
 
 if os.getenv("RENDER"):
-    backup_dir_tmp = "/tmp/"  # Render usa /tmp/ para almacenamiento temporal
+    backup_dir_tmp = "/tmp/backups/"  # Render usa /tmp/ para almacenamiento temporal
     dir_restored_tmp = "/tmp/backups/"
     os.makedirs(dir_restored_tmp, exist_ok=True)
     dir_restored = "/tmp/"
@@ -80,11 +80,8 @@ def restore_from_avro(table_name: str, db: Session):
         s3_key = f"backups/{table_name}.avro"
 
         s3_client.download_file(S3_BUCKET_NAME, s3_key, f"{dir_restored}{s3_key}")
-        
-        if not os.path.exists(f"{backup_dir_tmp}/{table_name}.avro"):
-            raise Exception("Backup file not found.")
 
-        with open(f"{backup_dir_tmp}{table_name}.avro", "rb") as in_file:
+        with open(f"{dir_restored_tmp}{table_name}.avro", "rb") as in_file:
             reader = fastavro.reader(in_file)
             rows = [row for row in reader]
 
