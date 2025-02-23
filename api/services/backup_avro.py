@@ -81,7 +81,7 @@ def restore_from_avro(table_name: str, db: Session):
 
         s3_client.download_file(S3_BUCKET_NAME, s3_key, f"{dir_restored}{s3_key}")
 
-        with open(f"{dir_restored_tmp}{table_name}.avro", "rb") as in_file:
+        with open(f"{dir_restored}{s3_key}", "rb") as in_file:
             reader = fastavro.reader(in_file)
             rows = [row for row in reader]
 
