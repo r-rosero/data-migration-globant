@@ -7,13 +7,13 @@ from sqlalchemy import text
 # Configuración de S3
 S3_BUCKET_NAME = "data-migration-globant"
 S3_REGION = "us-east-2"
-S3_ACCESS_KEY = "AKIAU5LH6BM3FCHPAOII"
-S3_SECRET_KEY = "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"
+A_K = "AKIAU5LH6BM3FCHPAOII"
+S_K = "1RHKMU9smJ5+UgBIjNmroityK/qH3frtY4V9xwXD"
 
 s3_client = boto3.client(
     "s3",
-    aws_access_key_id=S3_ACCESS_KEY,
-    aws_secret_access_key=S3_SECRET_KEY,
+    aws_access_key_id=A_K,
+    aws_secret_access_key=S_K,
     region_name=S3_REGION
 )
 
