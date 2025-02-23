@@ -15,12 +15,7 @@ This project is designed to clean and migrate data from CSV files to a PostgreSQ
     python -m venv venv
     ```
 2. Activate the virtual environment:
-    - On Windows:
-        ```sh
-        venv\Scripts\activate
         ```
-    - On macOS/Linux:
-        ```sh
         source venv/bin/activate
         ```
 3. Install the required packages:
