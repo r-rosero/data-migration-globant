@@ -14,10 +14,10 @@ s3_client = boto3.client(
 
 if os.getenv("RENDER"):
     backup_dir_tmp = "/tmp/"  # Render usa /tmp/ para almacenamiento temporal
-    dir_restored = "/tmp/"
+    dir_restored = "tmp/"
 else:
     backup_dir_tmp = "data/backups/"
-    dir_restored = "data/backups/"
+    dir_restored = "data/"
 
 def get_avro_type(sqlalchemy_type):
     """Map SQLAlchemy types to Avro types."""
@@ -75,7 +75,7 @@ def export_to_avro(table_name: str, db: Session) -> str:
 def restore_from_avro(table_name: str, db: Session):
     """Restores data from an AVRO backup file into the database."""
     try:
-        s3_key = f"{table_name}.avro"
+        s3_key = f"backups/{table_name}.avro"
 
         s3_client.download_file(S3_BUCKET_NAME, s3_key, f"{dir_restored}{s3_key}")
         
@@ -97,7 +97,7 @@ def restore_from_avro(table_name: str, db: Session):
         db.execute(insert(table).values(rows))
         db.commit()
 
-        os.remove(f"{dir_restored}{s3_key}")
+        os.remove(f"data/{s3_key}")
 
         return {"message": f"Successfully restored {len(rows)} records to {table_name}."}
     except Exception as e:
