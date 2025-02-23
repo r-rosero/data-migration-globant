@@ -69,3 +69,32 @@ def export_to_avro(table_name: str, db: Session) -> str:
     except Exception as e:
         print(f"Error exporting {table_name} to AVRO: {str(e)}")
         raise Exception(f"Error exporting {table_name} to AVRO: {str(e)}")
+
+def restore_from_avro(table_name: str, db: Session):
+    """Restores data from an AVRO backup file into the database."""
+    try:
+        s3_key = f"backups/{table_name}.avro"
+        file_path = f"https://{S3_BUCKET_NAME}.s3.{S3_REGION}.amazonaws.com/{s3_key}"
+
+        s3_client.download_file(S3_BUCKET_NAME, s3_key, backup_dir_tmp)
+        
+        if not os.path.exists(f"{backup_dir_tmp}/{table_name}.avro"):
+            raise Exception("Backup file not found.")
+
+        with open(f"{backup_dir_tmp}/{table_name}.avro", "rb") as in_file:
+            reader = fastavro.reader(in_file)
+            rows = [row for row in reader]
+
+        if not rows:
+            raise Exception("No data found in backup file.")
+
+        db.execute(text(f"DELETE FROM {table_name}"))
+        db.bulk_insert_mappings(db.get_bind().execute, rows)
+        db.commit()
+
+        os.remove(backup_dir_tmp)
+
+        return {"message": f"Successfully restored {len(rows)} records to {table_name}."}
+    except Exception as e:
+        db.rollback()
+        raise Exception(f"Error restoring {table_name} from AVRO: {str(e)}")
