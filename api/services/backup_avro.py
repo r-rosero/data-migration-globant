@@ -3,7 +3,7 @@ import boto3
 import fastavro
 from sqlalchemy.orm import Session
 from sqlalchemy import text
-from config.config_env import S3_BUCKET_NAME, S3_REGION, S3_ACCESS_KEY, S3_SECRET_KEY
+from api.config.config_env import S3_BUCKET_NAME, S3_REGION, S3_ACCESS_KEY, S3_SECRET_KEY
 
 s3_client = boto3.client(
     "s3",
@@ -11,6 +11,11 @@ s3_client = boto3.client(
     aws_secret_access_key=S3_SECRET_KEY,
     region_name=S3_REGION
 )
+
+if os.getenv("RENDER"):
+    backup_dir_tmp = "/tmp/"  # Render usa /tmp/ para almacenamiento temporal
+else:
+    backup_dir_tmp = "data/backups/"
 
 def get_avro_type(sqlalchemy_type):
     """Map SQLAlchemy types to Avro types."""
@@ -24,8 +29,6 @@ def get_avro_type(sqlalchemy_type):
         return "string"
 
 def export_to_avro(table_name: str, db: Session) -> str:
-    backup_dir_tmp="data/backups"
-    
     """Exports a table to an AVRO file."""
     try:
         # Obtener los datos de la tabla
