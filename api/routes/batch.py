@@ -24,23 +24,23 @@ table_map = {
 
 @router.post("/batch")
 def insert_batch(data: dict, db: Session = Depends(get_db)):
+    batch_size = 1000
+    total_inserted = 0
+    
     try:
-        table_name = data.get("table_name")  # La tabla a insertar
-        records = data.get("records")  # Lista de registros
-
-        if not table_name or not records:
-            raise HTTPException(status_code=400, detail="Missing table_name or records")
+        table_name = data.get("table_name")
+        records = data.get("records") 
 
         # Obtener el modelo SQLAlchemy dinámicamente
-        model = table_map.get(table_name)  
-        if not model:
-            raise HTTPException(status_code=400, detail=f"Invalid table: {table_name}")
+        model = table_map.get(table_name)
+        
+        for i in range(0, len(records), batch_size):
+            batch = records[i:i + batch_size]
+            db.bulk_insert_mappings(model, batch)
+            db.commit()
+            total_inserted += len(batch)
 
-        # Insertar en la tabla correspondiente
-        db.bulk_insert_mappings(model, records)
-        db.commit()
-
-        return {"message": f"Inserted {len(records)} records into {table_name}."}
+        return {"mensaje": f"{total_inserted} registros insertados en {table_name}."}
     
     except Exception as e:
         db.rollback()
