@@ -11,8 +11,8 @@ import requests
 import scripts.data_cleaning.data_clean as data_clean
 
 # Configuración de la API
-#BASE_API_URL = "https://data-migration-globant.onrender.com"
-BASE_API_URL = "http://localhost:8000"
+BASE_API_URL = "https://data-migration-globant.onrender.com"
+#BASE_API_URL = "http://localhost:8000"
 
 def backup_data():
     
