@@ -32,7 +32,6 @@ def get_avro_type(sqlalchemy_type):
         return "string"
 
 def export_to_avro(table_name: str, db: Session) -> str:
-    """Exports a table to an AVRO file."""
     try:
         # Obtener los datos de la tabla
         query = text(f"SELECT * FROM {table_name}")
