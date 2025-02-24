@@ -7,3 +7,4 @@ gunicorn
 fastavro
 boto3
 python-dotenv
+pandas
