@@ -1,9 +1,6 @@
-import os
-import boto3
-import pandas as pd
 from sqlalchemy.orm import Session
 from fastapi import APIRouter, Depends, HTTPException
-from api.config import get_db
+from api.config.db_config import get_db
 from api.models.departments import Department
 from api.models.hired_employees import HiredEmployee
 from api.models.jobs import Job

@@ -8,3 +8,4 @@ fastavro
 boto3
 python-dotenv
 pandas
+tkinter

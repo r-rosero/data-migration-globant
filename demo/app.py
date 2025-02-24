@@ -1,5 +1,5 @@
 import tkinter as tk
-from tkinter import messagebox
+from tkinter import ttk, messagebox
 import requests
 
 # Configuración de la API
@@ -36,23 +36,45 @@ def restore_data():
     except Exception as e:
         messagebox.showerror("Error", f"No se pudo conectar a la API\n{e}")
 
-# Configuración de la ventana
-root = tk.Tk()
-root.title("Gestionador de datos")
-root.geometry("350x250")
+def run_migration():
+    pass
 
-# Etiqueta y campo de entrada para la tabla
-tk.Label(root, text="Nombre de la tabla:", font=("Arial", 12)).pack(pady=10)
-entry_table = tk.Entry(root, font=("Arial", 12))
+# Crear la ventana principal
+root = tk.Tk()
+root.title("Gestión de Migración")
+root.geometry("400x300")
+
+# Crear Notebook (pestañas)
+notebook = ttk.Notebook(root)
+notebook.pack(pady=10, expand=True, fill="both")
+
+# Pestaña 1: Migración
+tab1 = ttk.Frame(notebook)
+notebook.add(tab1, text="Migración")
+
+migrate_label = tk.Label(tab1, text="Migrar datos desde local a la BD (ToDo: desde S3)", font=("Arial", 12))
+migrate_label.pack(pady=10)
+
+migrate_button = tk.Button(tab1, text="Ejecutar Migración", command=run_migration,  font=("Arial", 12))
+migrate_button.pack(pady=10)
+
+# Pestaña 2: Restauración
+tab2 = ttk.Frame(notebook)
+notebook.add(tab2, text="Restauración y Backup")
+
+tk.Label(tab2, text="Nombre de la tabla:", font=("Arial", 12)).pack(pady=10)
+entry_table = tk.Entry(tab2, width=20)
 entry_table.pack(pady=5)
 
-# Botón para restaurar
-restore_button = tk.Button(root, text="Restaurar Datos", command=restore_data, font=("Arial", 12))
-restore_button.pack(pady=20)
+restore_label = tk.Label(tab2, text="Restaurar datos desde backup", font=("Arial", 12))
+restore_label.pack(pady=10)
+
+restore_button = tk.Button(tab2, text="Restaurar", command=restore_data, font=("Arial", 12))
+restore_button.pack(pady=10)
 
 # Botón para hacer backup
-backup_button = tk.Button(root, text="Hacer backup de tablas", command=backup_data, font=("Arial", 12))
+backup_button = tk.Button(tab2, text="Hacer backup de tablas", command=backup_data, font=("Arial", 12))
 backup_button.pack(pady=10)
 
-# Ejecutar la app
+# Ejecutar la aplicación
 root.mainloop()
