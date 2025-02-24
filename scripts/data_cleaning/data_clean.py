@@ -15,31 +15,16 @@ def data_clean(path_file_csv):
     data = pd.read_csv(path_file_csv)
     file_name = os.path.splitext(os.path.basename(path_file_csv))[0]
 
-    there_are_nulls = False
-    there_are_duplicates = False
-
     #validacón de campos nulos
-    for id, row in data.iterrows():
-        if row.isnull().values.any():
-            there_are_nulls = True
-            data.drop(id, inplace=True)
-            with open(f"data/migration_logs/{file_name}_nulls.log", "a") as file:
-                file.write(f"Se eliminó la fila con id: {id}, por tener valores en nulos.\n")
-
-    if not there_are_nulls:
-        with open(f"data/migration_logs/{file_name}_nulls.log", "a") as file:
-            file.write(f"Se cargaron todos los registros del archivo.\n")
+    null_rows = data[data.isnull().any(axis=1)]
+    if not null_rows.empty:
+        null_rows.to_csv(f"data/migration_logs/{file_name}_nulls.log", index=False)
+        data = data.dropna()
 
     # se valida si existen ids duplicados en el archivo, se elimina y se registra cual id se elimnó en el archivo de log
-    for id, row in data.iterrows():
-        if data.duplicated(subset=["id"]).any():
-            there_are_duplicates = True
-            data.drop(id, inplace=True)
-            with open(f"data/migration_logs/{file_name}_duplicates.log", "a") as file:
-                file.write(f"Se eliminó la fila con id: {id}, por tener un id duplicado.\n")
+    duplicate_rows = data[data.duplicated(subset=["id"], keep=False)]
+    if not duplicate_rows.empty:
+        duplicate_rows.to_csv(f"data/migration_logs/{file_name}_duplicates.log", index=False)
+        data = data.drop_duplicates(subset=["id"])
 
-    if not there_are_duplicates:
-        with open(f"data/migration_logs/{file_name}_duplicates.log", "a") as file:
-            file.write(f"Se cargaron todos los registros del archivo.\n")
-
-    return data
+    return data.reset_index(drop=True)

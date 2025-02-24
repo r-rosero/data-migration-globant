@@ -1,6 +1,5 @@
 from typing import List
 from fastapi import APIRouter, Depends, HTTPException
-from sqlalchemy import insert
 from sqlalchemy.orm import Session
 from api.models.jobs import Job, JobBatch
 from api.config.db_config import SessionLocal
@@ -42,7 +41,7 @@ def create_job_batch(batch: JobBatch, db: Session = Depends(get_db)):
     jobs_data = []
 
     for job in batch.jobs:
-        job.append({"id": job.id, "job": job.job})
+        jobs_data.append({"id": job.id, "job": job.job})
 
     # Si hay más de 1000 registros, dividir en lotes
     for i in range(0, len(jobs_data), batch_load_size):
