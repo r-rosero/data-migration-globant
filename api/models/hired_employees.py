@@ -1,4 +1,4 @@
-from sqlalchemy import Column, Integer, DateTime, ForeignKey, String
+from sqlalchemy import Column, Integer, ForeignKey, String
 from api.models.base import Base
 
 class HiredEmployee(Base):
