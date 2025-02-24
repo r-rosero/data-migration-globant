@@ -1,12 +1,20 @@
 from sqlalchemy.orm import Session
 from fastapi import APIRouter, Depends, HTTPException
-from api.config.db_config import get_db
+from api.config.db_config import SessionLocal
 from api.models.departments import Department
 from api.models.hired_employees import HiredEmployee
 from api.models.jobs import Job
 from scripts.migration.migrate_csv_data_s3 import download_csv_from_s3, load_csv_to_db 
 
 router = APIRouter()
+
+# Dependencia para obtener la sesión de la BD
+def get_db():
+    db = SessionLocal()
+    try:
+        yield db
+    finally:
+        db.close()
 
 # Mapeo de archivos CSV a modelos SQLAlchemy
 CSV_FILES = {
