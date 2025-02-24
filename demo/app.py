@@ -11,8 +11,8 @@ import requests
 import scripts.data_cleaning.data_clean as data_clean
 
 # Configuración de la API
-BASE_API_URL = "https://data-migration-globant.onrender.com"
-#BASE_API_URL = "http://localhost:8000"
+#BASE_API_URL = "https://data-migration-globant.onrender.com"
+BASE_API_URL = "http://localhost:8000"
 
 def backup_data():
     
@@ -49,13 +49,14 @@ def run_migration():
     table_name = entry_table_create.get().strip()  # Obtener el nombre de la tabla
     ruta_archivo= filedialog.askopenfilename(title="Seleccionar archivo", filetypes=(("CSV files", "*.csv"), ("all files", "*.*")))
     
-    url = f"{BASE_API_URL}/{table_name}/batch"
+    #url = f"{BASE_API_URL}/{table_name}/batch"
+    url = f"{BASE_API_URL}/batch"
     
     try:
         data = data_clean.data_clean(ruta_archivo)  # Aplicar limpieza de datos
 
         #enviar data a la API
-        response = requests.post(url, json={f"{table_name}": data.to_dict(orient="records")})
+        response = requests.post(url, json={"table_name": f"{table_name}", "records" : data.to_dict(orient="records")})
 
         if response.status_code == 200:
             messagebox.showinfo("Éxito", "Carga completada correctamente.")
