@@ -38,22 +38,3 @@ def create_hired_employee(employee_id: int, employee_name: str, employee_datetim
     db.commit()
     db.refresh(new_employee_hired)
     return new_employee_hired
-
-@router.post("/employees/batch")
-def create_hired_employee_batch(batch: EmployeeBatch, db: Session = Depends(get_db)):
-    total_inserted = 0
-
-    employees_data = [] 
-
-    for employee in batch.employees:
-        employees_data.append({"id": employee.id, "name": employee.name, "datetime": employee.datetime,
-                           "department_id": employee.department_id, "job_id": employee.job_id})
-
-    # Si hay más de 1000 registros, dividir en lotes
-    for i in range(0, len(employees_data), batch_load_size):
-        data_batch = employees_data[i:i + batch_load_size]
-        db.bulk_insert_mappings(HiredEmployee, data_batch)
-        db.commit()
-        total_inserted += len(data_batch)
-
-    return {"mensaje": f"Total registros insertados: {total_inserted}."}

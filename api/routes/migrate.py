@@ -17,7 +17,7 @@ def get_db():
         db.close()
 
 # Mapeo de archivos CSV a modelos SQLAlchemy
-CSV_FILES = {
+csv_files = {
     "departments.csv": (Department, "departments"),
     "jobs.csv": (Job, "jobs"),
     "hired_employees.csv": (HiredEmployee, "hired_employees"),
@@ -27,7 +27,7 @@ CSV_FILES = {
 def migrate_data(db: Session = Depends(get_db)):
     """Endpoint para migrar datos desde archivos CSV almacenados en S3 a la base de datos."""
     try:
-        for file_name, (model, table_name) in CSV_FILES.items():
+        for file_name, (model, table_name) in csv_files.items():
             local_file = download_csv_from_s3(file_name)
             if local_file:
                 load_csv_to_db(local_file, model, db)

@@ -32,22 +32,3 @@ def create_job(job_id: int, job_name: str, db: Session = Depends(get_db)):
     db.commit()
     db.refresh(new_job)
     return new_job
-
-# función encargada de la creación de los jobs por batch
-@router.post("/jobs/batch")
-def create_job_batch(batch: JobBatch, db: Session = Depends(get_db)):
-    total_inserted = 0
-
-    jobs_data = []
-
-    for job in batch.jobs:
-        jobs_data.append({"id": job.id, "job": job.job})
-
-    # Si hay más de 1000 registros, dividir en lotes
-    for i in range(0, len(jobs_data), batch_load_size):
-        data_batch = jobs_data[i:i + batch_load_size]
-        db.bulk_insert_mappings(Job, data_batch)
-        db.commit()
-        total_inserted += len(data_batch)
-
-    return {"mensaje": f"Total registros insertados: {total_inserted}."}

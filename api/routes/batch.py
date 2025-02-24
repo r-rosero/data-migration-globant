@@ -16,7 +16,7 @@ def get_db():
     finally:
         db.close()
 
-TABLES_MAPPING = {
+table_map = {
     "employees": HiredEmployee,
     "departments": Department,
     "jobs": Job,
@@ -32,7 +32,7 @@ def insert_batch(data: dict, db: Session = Depends(get_db)):
             raise HTTPException(status_code=400, detail="Missing table_name or records")
 
         # Obtener el modelo SQLAlchemy dinámicamente
-        model = TABLES_MAPPING.get(table_name)  
+        model = table_map.get(table_name)  
         if not model:
             raise HTTPException(status_code=400, detail=f"Invalid table: {table_name}")
 
