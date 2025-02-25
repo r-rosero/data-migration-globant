@@ -67,5 +67,3 @@ Este proyecto es una Prueba de Concepto (PoC) para la migración de datos histó
 - **Manejo de Constantes:** Centralizar la configuración de rutas, tamaños de batch y otros parámetros críticos utilizando herramientas como `pydantic.BaseSettings`.
 - **Validaciones de JSON:** Ampliar y robustecer la validación de la estructura de los JSON en los endpoints mediante modelos Pydantic para garantizar la integridad de los datos.
 - **Backup e Inserción en Batch:** Optimizar el proceso de restauración de backups para manejar grandes volúmenes de datos de forma eficiente.
-- **Integración Continua (CI/CD):** Configurar pipelines de CI/CD (por ejemplo, GitHub Actions, Jenkins) para automatizar pruebas, análisis de código y despliegues.
-- **Contenerización:** Mejorar el Dockerfile utilizando multi-stage builds para obtener imágenes más ligeras y eficientes.
