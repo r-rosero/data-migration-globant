@@ -40,6 +40,9 @@ Este proyecto es una Prueba de Concepto (PoC) para la migración de datos histó
 - **Dockerfile y docker-compose.yml**  
   - Archivos para contenerización y despliegue, facilitando una configuración consistente en desarrollo y producción (Render).
 
+- **Reportes**
+  - Archivos pdf con los resultados obtenidos con base en las consultas solicitadas en el challenge 2. (Ver en QlikSense también).
+
 - **Interfaz de Demo (Tkinter):**  
   - Una pequeña aplicación de escritorio que permite probar la API (migración, restore, etc.) de forma interactiva.
 
