@@ -38,7 +38,7 @@ Este proyecto es una Prueba de Concepto (PoC) para la migración de datos histó
   - Directorio local para almacenar logs de limpieza de datos antes de ser subidos a S3.
 
 - **Dockerfile y docker-compose.yml**  
-  - Archivos para contenedorización y despliegue, facilitando una configuración consistente en desarrollo y producción (Render).
+  - Archivos para contenerización y despliegue, facilitando una configuración consistente en desarrollo y producción (Render).
 
 - **Interfaz de Demo (Tkinter):**  
   - Una pequeña aplicación de escritorio que permite probar la API (migración, restore, etc.) de forma interactiva.
